@@ -16,6 +16,7 @@ axion_mass = 1e-22 * 1.783e-36  # kg
 G = 6.67e-11  # N m^2 kg^-2
 omega_m0 = 0.31
 H_0 = 67.7 * 1e3 / (parsec * 1e6)  # s^-1
+PI = np.pi
 
 length_unit = (8 * np.pi * hbar ** 2 / (3 * axion_mass ** 2 * H_0 ** 2 * omega_m0)) ** 0.25
 time_unit = (3 * H_0 ** 2 * omega_m0 / (8 * np.pi)) ** -0.5
@@ -502,7 +503,7 @@ def evolve(central_mass, num_threads, length, length_units, resol, duration, dur
 
     rfft_rho = pyfftw.builders.rfftn(rho, axes=(0, 1, 2), threads=num_threads)
     phik = rfft_rho(rho)  # not actually phik but phik is defined in next line
-    phik = ne.evaluate("-4*np.pi*phik/rkarray2")
+    phik = ne.evaluate("-4*PI*phik/rkarray2")
     phik[0, 0, 0] = 0
     irfft_phi = pyfftw.builders.irfftn(phik, axes=(0, 1, 2), threads=num_threads)
 
@@ -571,7 +572,7 @@ def evolve(central_mass, num_threads, length, length_units, resol, duration, dur
         psi = ifft_funct(funct)
         rho = ne.evaluate("real(abs(psi)**2)")
         phik = rfft_rho(rho)  # not actually phik but phik is defined on next line
-        phik = ne.evaluate("-4*np.pi*(phik)/rkarray2")
+        phik = ne.evaluate("-4*PI*(phik)/rkarray2")
         phik[0, 0, 0] = 0
         phisp = irfft_phi(phik)
         phisp = ne.evaluate("phisp-(cmass)/distarray")
